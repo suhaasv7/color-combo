@@ -145,14 +145,19 @@ const ColorPalette: React.FC = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const padding = 20;
-    const colorWidth = 120;
-    const colorHeight = 120;
-    const cornerRadius = 8;
-    const textHeight = 40; // Extra height for color name
+    // Increased dimensions for higher quality
+    const padding = 60;
+    const colorWidth = 300;
+    const colorHeight = 300;
+    const cornerRadius = 24;
+    const textHeight = 100; // Extra height for text
 
     canvas.width = colors.length * (colorWidth + padding) + padding;
     canvas.height = colorHeight + padding * 2 + textHeight;
+
+    // Enable high-quality rendering
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
 
     // White background
     ctx.fillStyle = "white";
@@ -167,19 +172,22 @@ const ColorPalette: React.FC = () => {
       drawRoundedRect(ctx, x, y, colorWidth, colorHeight, cornerRadius);
       ctx.fill();
 
-      // Draw hex code
+      // Draw hex code - larger and clearer
       ctx.fillStyle = "black";
-      ctx.font = "12px Arial";
-      ctx.fillText(color.hex, x + 5, y + colorHeight + 15);
+      ctx.font = "bold 28px Arial";
+      ctx.textAlign = "center";
+      const hexX = x + colorWidth / 2;
+      ctx.fillText(color.hex, hexX, y + colorHeight + 45);
 
-      // Draw color name
-      ctx.font = "10px Arial";
-      ctx.fillText(color.name, x + 5, y + colorHeight + 30);
+      // Draw color name - clear and properly sized
+      ctx.font = "24px Arial";
+      ctx.fillText(color.name, hexX, y + colorHeight + 80);
     });
 
+    // Convert to PNG with maximum quality
     const link = document.createElement("a");
     link.download = "color-palette.png";
-    link.href = canvas.toDataURL();
+    link.href = canvas.toDataURL("image/png", 1.0);
     link.click();
   };
 
